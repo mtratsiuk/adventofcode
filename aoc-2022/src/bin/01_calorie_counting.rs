@@ -3,7 +3,7 @@ use std::fs;
 
 fn main() {
     let pwd = env::current_dir().unwrap();
-    let input = fs::read_to_string(pwd.join("data").join("00_calorie_counting.txt")).unwrap();
+    let input = fs::read_to_string(pwd.join("data").join("01_calorie_counting.txt")).unwrap();
 
     let max = solve_0(&input);
     let max_3 = solve_1(&input);
