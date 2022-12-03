@@ -2,9 +2,20 @@
 
 Solutions for <https://adventofcode.com/>
 
-## Run specific challenge
+## Setup `.env`
 
 ```sh
-cd ./aoc-2022
-cargo run --bin 00_calorie_counting
+cp .env.sample .env
+```
+
+## Start new day
+
+```sh
+./bin/new $DAY_NUMBER $DAY_NAME
+```
+
+## Run specific day
+
+```sh
+./bin/run $DAY_NUMBER
 ```
