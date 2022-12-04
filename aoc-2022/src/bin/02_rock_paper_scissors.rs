@@ -41,8 +41,8 @@ fn solve_1(input: &str) -> i32 {
 fn get_code_pairs(input: &str) -> impl Iterator<Item = (char, char)> + '_ {
     input
         .trim()
-        .split("\n")
-        .map(|line| match line.chars().collect::<Vec<char>>()[..] {
+        .lines()
+        .map(|line| match line.chars().collect::<Vec<_>>()[..] {
             [left, _, right] => (left, right),
             _ => panic!("Unexpected input format"),
         })

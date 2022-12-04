@@ -31,14 +31,10 @@ pub fn build_priorities_map() -> HashMap<char, i32> {
 pub fn solve_0(input: &str, prios_map: &HashMap<char, i32>) -> i32 {
     let mut sum = 0;
 
-    for line in input.split("\n") {
-        if line.is_empty() {
-            continue;
-        }
-
+    for line in input.trim().lines() {
         let buckets = line.split_at(line.len() / 2);
-        let left = buckets.0.chars().collect::<HashSet<char>>();
-        let right = buckets.1.chars().collect::<HashSet<char>>();
+        let left = buckets.0.chars().collect::<HashSet<_>>();
+        let right = buckets.1.chars().collect::<HashSet<_>>();
         let intersection = left.intersection(&right).next().unwrap();
 
         sum += prios_map.get(intersection).unwrap();
@@ -52,9 +48,9 @@ pub fn solve_1(input: &str, prios_map: &HashMap<char, i32>) -> i32 {
 
     for group in input
         .trim()
-        .split("\n")
-        .map(|line| line.chars().collect::<HashSet<char>>())
-        .collect::<Vec<HashSet<char>>>()
+        .lines()
+        .map(|line| line.chars().collect::<HashSet<_>>())
+        .collect::<Vec<HashSet<_>>>()
         .chunks(3)
     {
         match group {
@@ -62,7 +58,7 @@ pub fn solve_1(input: &str, prios_map: &HashMap<char, i32>) -> i32 {
                 let right_intersection = second
                     .intersection(&third)
                     .cloned()
-                    .collect::<HashSet<char>>();
+                    .collect::<HashSet<_>>();
 
                 let intersection = first.intersection(&right_intersection).next().unwrap();
 

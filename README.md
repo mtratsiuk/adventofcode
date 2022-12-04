@@ -11,11 +11,11 @@ cp .env.sample .env
 ## Start new day
 
 ```sh
-./bin/new $DAY_NUMBER $DAY_NAME
+./bin/new.sh $DAY_NUMBER $DAY_NAME
 ```
 
 ## Run specific day
 
 ```sh
-./bin/run $DAY_NUMBER
+./bin/run.sh $DAY_NUMBER
 ```
