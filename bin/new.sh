@@ -36,11 +36,11 @@ fn main() {
 }
 
 fn solve_0(input: &str) -> i32 {
-
+    0
 }
 
 fn solve_1(input: &str) -> i32 {
-
+    0
 }
 
 #[cfg(test)]
