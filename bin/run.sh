@@ -13,4 +13,7 @@ DAY_NUMBER_PADDED=$(printf "%02d" $DAY_NUMBER)
 BIN_NAME=$(ls -1 ./src/bin/ | grep "^${DAY_NUMBER_PADDED}_" | sed 's/\.rs//g')
 
 echo "Running ${BIN_NAME}..."
-cargo run --bin $BIN_NAME
+
+shift 1
+
+time cargo run --release --bin $BIN_NAME "$@"
