@@ -1,19 +1,24 @@
 package mishutils
 
 import (
-	"cmp"
+	"math"
+	"os"
+	"path"
+	"strings"
 
 	"golang.org/x/exp/constraints"
 )
 
-func Max[T cmp.Ordered](s []T) (max T, ok bool) {
+type Numeric interface {
+	constraints.Integer | constraints.Float
+}
+
+func Max[T Numeric](s []T) T {
 	if len(s) == 0 {
-		ok = false
-		return
+		return T(math.NaN())
 	}
 
-	ok = true
-	max = s[0]
+	max := s[0]
 
 	for _, cur := range s[1:] {
 		if cur > max {
@@ -21,13 +26,25 @@ func Max[T cmp.Ordered](s []T) (max T, ok bool) {
 		}
 	}
 
-	return
+	return max
 }
 
-func Sum[T constraints.Integer | constraints.Float](s []T) (sum T) {
+func Sum[T Numeric](s []T) (sum T) {
 	for _, v := range s {
 		sum += v
 	}
 
 	return
+}
+
+func ReadInput(name string) string {
+	data := os.Getenv("AOC_DATA_PATH")
+
+	input, err := os.ReadFile(path.Join(data, name+".txt"))
+
+	if err != nil {
+		panic(err)
+	}
+
+	return strings.TrimSpace(string(input))
 }
