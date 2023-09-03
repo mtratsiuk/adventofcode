@@ -16,4 +16,8 @@ echo "Running ${BIN_NAME}..."
 
 shift 1
 
-time cargo run --release --bin $BIN_NAME "$@"
+echo "Building $BIN_NAME..."
+time cargo build --release --bin $BIN_NAME "$@"
+
+echo "Running $BIN_NAME..."
+time ./target/release/$BIN_NAME "$@"
