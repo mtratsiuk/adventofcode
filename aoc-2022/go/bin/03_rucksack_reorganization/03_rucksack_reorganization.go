@@ -29,7 +29,7 @@ func solve_2(input string) (int, error) {
 	lines := strings.Split(input, "\n")
 
 	for i := 0; i < len(lines); i += 3 {
-		sum += getTypePriority(findBadge(lines[i:i+3]))
+		sum += getTypePriority(findBadge(lines[i : i+3]))
 	}
 
 	return sum, nil
