@@ -7,10 +7,11 @@ import (
 	"strings"
 
 	"github.com/mtratsiuk/adventofcode/aoc-2022/go/mishutils"
+	"github.com/mtratsiuk/adventofcode/gotils"
 )
 
 func main() {
-	in := mishutils.ReadInput("01_calorie_counting")
+	in := gotils.ReadInput("01_calorie_counting")
 
 	fmt.Println(solve_1(in))
 	fmt.Println(solve_2(in))

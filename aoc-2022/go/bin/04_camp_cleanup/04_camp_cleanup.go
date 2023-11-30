@@ -2,14 +2,13 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 
-	"github.com/mtratsiuk/adventofcode/aoc-2022/go/mishutils"
+	"github.com/mtratsiuk/adventofcode/gotils"
 )
 
 func main() {
-	in := mishutils.ReadInput("04_camp_cleanup")
+	in := gotils.ReadInput("04_camp_cleanup")
 
 	fmt.Println(solve_1(in))
 	fmt.Println(solve_2(in))
@@ -19,11 +18,7 @@ func solve_1(input string) (int, error) {
 	count := 0
 
 	for _, line := range strings.Split(input, "\n") {
-		a, b, err := RangePairFromString(line)
-
-		if err != nil {
-			return 0, err
-		}
+		a, b := RangePairFromString(line)
 
 		if a.Contains(b) || b.Contains(a) {
 			count += 1
@@ -37,11 +32,7 @@ func solve_2(input string) (int, error) {
 	count := 0
 
 	for _, line := range strings.Split(input, "\n") {
-		a, b, err := RangePairFromString(line)
-
-		if err != nil {
-			return 0, err
-		}
+		a, b := RangePairFromString(line)
 
 		if a.OverlapsWith(b) {
 			count += 1
@@ -66,41 +57,23 @@ func (r Range) OverlapsWith(other Range) bool {
 		other.Contains(r)
 }
 
-func RangeFromString(s string) (Range, error) {
+func RangeFromString(s string) Range {
 	rangeStr := strings.Split(s, "-")
 
-	l, err := strconv.Atoi(rangeStr[0])
-
-	if err != nil {
-		return Range{}, err
-	}
-
-	r, err := strconv.Atoi(rangeStr[1])
-
-	if err != nil {
-		return Range{}, err
-	}
+	l := gotils.MustParseInt(rangeStr[0])
+	r := gotils.MustParseInt(rangeStr[1])
 
 	return Range{
 		l,
 		r,
-	}, nil
+	}
 }
 
-func RangePairFromString(s string) (Range, Range, error) {
+func RangePairFromString(s string) (Range, Range) {
 	pair := strings.Split(s, ",")
 
-	first, err := RangeFromString(pair[0])
+	first := RangeFromString(pair[0])
+	second := RangeFromString(pair[1])
 
-	if err != nil {
-		return Range{}, Range{}, err
-	}
-
-	second, err := RangeFromString(pair[1])
-
-	if err != nil {
-		return Range{}, Range{}, err
-	}
-
-	return first, second, nil
+	return first, second
 }

@@ -10,7 +10,7 @@ for project in $(ls | grep '^aoc-'); do
   cargo check
   cargo test
 
-  go test ./go/**/*.go
+  go test ./...
   not_formatted=$(gofmt -l .)
 
   if [ ! -z "$not_formatted" ]; then
