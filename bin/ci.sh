@@ -7,8 +7,10 @@ cd "$(dirname "$0")"/..
 for project in $(ls | grep '^aoc-'); do
   cd $project
 
-  cargo check
-  cargo test
+  if [ -f ./Cargo.toml ]; then
+    cargo check
+    cargo test
+  fi
 
   go test ./...
   not_formatted=$(gofmt -l .)

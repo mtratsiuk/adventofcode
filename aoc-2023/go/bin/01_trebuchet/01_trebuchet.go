@@ -52,31 +52,45 @@ func solve2(input string) int {
 	sum := 0
 
 	for _, line := range strings.Fields(input) {
-		fmt.Println(line)
-
+		firstDigit := ""
 		for i := 0; i < len(line); i += 1 {
+			if unicode.IsDigit(rune(line[i])) {
+				firstDigit = string(line[i])
+				break
+			}
+
 			for k, v := range digitsMap {
 				if strings.HasPrefix(line[i:], k) {
-					line = strings.Replace(line, k, v, 1)
+					firstDigit = v
 					break
 				}
 			}
-		}
 
-		fmt.Println(line)
-
-		digits := make([]rune, 0)
-
-		for _, c := range line {
-			if unicode.IsDigit(c) {
-				digits = append(digits, c)
+			if firstDigit != "" {
+				break
 			}
 		}
 
-		first := string(digits[0])
-		last := string(digits[len(digits)-1])
-		fmt.Println(first + last)
-		sum += gotils.MustParseInt(first + last)
+		lastDigit := ""
+		for i := len(line) - 1; i >= 0; i -= 1 {
+			if unicode.IsDigit(rune(line[i])) {
+				lastDigit = string(line[i])
+				break
+			}
+
+			for k, v := range digitsMap {
+				if strings.HasPrefix(line[i:], k) {
+					lastDigit = v
+					break
+				}
+			}
+
+			if lastDigit != "" {
+				break
+			}
+		}
+
+		sum += gotils.MustParseInt(firstDigit + lastDigit)
 	}
 
 	return sum
