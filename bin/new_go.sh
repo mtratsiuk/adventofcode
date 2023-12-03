@@ -62,7 +62,7 @@ data
 
 	expected := 0
 
-	if res := solve1(in); res != expected {
+	if res := solve1(strings.TrimSpace(in)); res != expected {
 		t.Errorf("\nsolve1() failed!\nexpected: %v\nactual: %v", expected, res)
 	}
 }
@@ -74,7 +74,7 @@ data
 
 	expected := 0
 
-	if res := solve2(in); res != expected {
+	if res := solve2(strings.TrimSpace(in)); res != expected {
 		t.Errorf("\nsolve2() failed!\nexpected: %v\nactual:%v", expected, res)
 	}
 }
