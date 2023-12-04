@@ -40,12 +40,16 @@ func main() {
 	fmt.Println(solve2(in))
 }
 
-func solve1(input string) int {
-	return 0
+func solve1(in string) int {
+	sum := 0
+
+	return sum
 }
 
-func solve2(input string) int {
-	return 0
+func solve2(in string) int {
+	sum := 0
+
+	return sum
 }
 ' > $SOLUTION_PATH
 
