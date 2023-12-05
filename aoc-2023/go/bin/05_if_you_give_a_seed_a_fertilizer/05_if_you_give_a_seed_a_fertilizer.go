@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"strings"
 
 	"github.com/mtratsiuk/adventofcode/gotils"
@@ -38,9 +39,33 @@ func solve1(in string) int {
 }
 
 func solve2(in string) int {
-	sum := 0
+	minLoc := math.MaxInt32
+	mappings := make([]Mappings, 0)
+	seedsStr, mappingsStr, _ := strings.Cut(in, "\n\n")
+	_, seeds, _ := strings.Cut(seedsStr, ": ")
 
-	return sum
+	for _, m := range strings.Split(mappingsStr, "\n\n") {
+		mappings = append(mappings, ParseMappings(m))
+	}
+
+	seedRngs := strings.Fields(seeds)
+
+	for i := 0; i < len(seedRngs)-1; i += 2 {
+		start := gotils.MustParseInt(seedRngs[i])
+		rng := gotils.MustParseInt(seedRngs[i+1])
+
+		for step := 0; step < rng; step += 1 {
+			next := start + step
+
+			for _, ms := range mappings {
+				next = ms.Map(next)
+			}
+
+			minLoc = min(minLoc, next)
+		}
+	}
+
+	return minLoc
 }
 
 type Mapping struct {
@@ -49,9 +74,9 @@ type Mapping struct {
 
 type Mappings []Mapping
 
-func (mpgs Mappings) Map(val int) int {
-	for _, m := range mpgs {
-		if val >= m.src && val <= m.src+m.rng {
+func (ms Mappings) Map(val int) int {
+	for _, m := range ms {
+		if val >= m.src && val < m.src+m.rng {
 			step := val - m.src
 			return m.dst + step
 		}
