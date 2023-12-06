@@ -30,3 +30,19 @@ Distance:  9  40  200
 		t.Errorf("\nsolve2() failed!\nexpected: %v\nactual:%v", expected, res)
 	}
 }
+
+func BenchmarkWinsCount(b *testing.B) {
+	race := Race{48989083, 390110311121360}
+
+	for i := 0; i < b.N; i++ {
+		race.WinsCount()
+	}
+}
+
+func BenchmarkWinsCountFast(b *testing.B) {
+	race := Race{48989083, 390110311121360}
+
+	for i := 0; i < b.N; i++ {
+		race.WinsCountFast()
+	}
+}

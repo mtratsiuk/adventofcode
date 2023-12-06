@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"regexp"
 	"strings"
 	"unicode"
@@ -28,7 +29,7 @@ func solve1(in string) int {
 }
 
 func solve2(in string) int {
-	return ParseRace(in).WinsCount()
+	return ParseRace(in).WinsCountFast()
 }
 
 type Race struct {
@@ -49,6 +50,17 @@ func (r Race) WinsCount() int {
 	}
 
 	return count
+}
+
+func (r Race) WinsCountFast() int {
+	d := r.time*r.time - 4*r.dist
+	sqrtd := (math.Sqrt(float64(d)))
+	ht1 := (float64(r.time) + sqrtd) / 2
+	ht2 := (float64(r.time) - sqrtd) / 2
+
+	count := math.Floor(ht1) - math.Floor(ht2)
+
+	return int(count)
 }
 
 func ParseRaces(in string) []Race {
