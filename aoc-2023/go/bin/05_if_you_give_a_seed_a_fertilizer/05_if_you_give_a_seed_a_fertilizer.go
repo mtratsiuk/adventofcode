@@ -56,10 +56,16 @@ func solve2(in string) int {
 
 		for step := 0; step < rng; step += 1 {
 			next := start + step
+			skip := math.MaxInt
 
 			for _, ms := range mappings {
-				next = ms.Map(next)
+				n, s := ms.Map2(next)
+
+				next = n
+				skip = min(skip, s)
 			}
+
+			step += max(skip-1, 0)
 
 			minLoc = min(minLoc, next)
 		}
@@ -83,6 +89,28 @@ func (ms Mappings) Map(val int) int {
 	}
 
 	return val
+}
+
+func (ms Mappings) Map2(val int) (int, int) {
+	mi := math.MaxInt
+
+	for _, m := range ms {
+		mi = min(mi, m.src)
+	}
+
+	for _, m := range ms {
+		if val >= m.src && val < m.src+m.rng {
+			step := val - m.src
+			skip := m.src + m.rng - 1 - val
+			return m.dst + step, skip
+		}
+	}
+
+	if val < mi {
+		return val, mi - val
+	}
+
+	return val, math.MaxInt
 }
 
 func ParseMappings(lines string) []Mapping {
