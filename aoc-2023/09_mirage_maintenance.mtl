@@ -1,0 +1,32 @@
+(def solve1
+  (||
+    (def input (readInput "09_mirage_maintenance"))
+    (def numbers ((input/split "\n")
+                  /map (|line| ((line/split " ")/map Number))))
+
+    ((numbers/map (|nums| (extrapolate nums 0)))
+      /reduce (|x acc| (+ x acc)))))
+
+
+(def extrapolate
+  (|nums acc|
+    (cond
+      ((nums/every (|x| (= x 0)))
+        acc)
+      (else
+        (extrapolate
+              ((nums/slice 1)/map (|n i| (- n (nums/at i))))
+              (+ acc (nums/at -1)))))))
+
+
+(def readInput
+  (|name|
+    (def data (Deno/env/get "AOC_DATA_PATH"))
+    (def path (+ data (+ "/" (+ name ".txt"))))
+    (def input (Deno/readFileSync path))
+    (def decoder (new TextDecoder))
+
+    ((decoder/decode input)/trim)))
+
+
+(console/log (solve1))
