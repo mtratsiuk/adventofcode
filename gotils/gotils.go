@@ -58,6 +58,16 @@ func Sum[T Numeric](s []T) (sum T) {
 	return
 }
 
+func Every[T any](s []T, f func(T) bool) bool {
+	for _, v := range s {
+		if !f(v) {
+			return false
+		}
+	}
+
+	return true
+}
+
 func Gcd[T constraints.Integer](a, b T) T {
 	for a != b {
 		if a > b {
