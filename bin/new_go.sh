@@ -56,6 +56,7 @@ func solve2(in string) int {
 echo 'package main
 
 import (
+	"strings"
 	"testing"
 )
 

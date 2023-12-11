@@ -50,6 +50,14 @@ func Min[T Numeric](s []T) T {
 	return min
 }
 
+func Abs[T Numeric](v T) T {
+	if v < 0 {
+		return -v
+	}
+
+	return v
+}
+
 func Sum[T Numeric](s []T) (sum T) {
 	for _, v := range s {
 		sum += v
@@ -66,6 +74,18 @@ func Every[T any](s []T, f func(T) bool) bool {
 	}
 
 	return true
+}
+
+func Count[T any](s []T, f func(T) bool) int {
+	count := 0
+
+	for _, v := range s {
+		if f(v) {
+			count += 1
+		}
+	}
+
+	return count
 }
 
 func Gcd[T constraints.Integer](a, b T) T {
@@ -139,4 +159,16 @@ func combineInner[T any](left, right []T) [][]T {
 	}
 
 	return res
+}
+
+func Pairs[T any](values []T) [][]T {
+	pairs := make([][]T, 0)
+
+	for i, l := range values {
+		for _, r := range values[i+1:] {
+			pairs = append(pairs, []T{l, r})
+		}
+	}
+
+	return pairs
 }
