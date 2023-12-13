@@ -19,18 +19,7 @@ func solve1(in string) int {
 
 	for _, pattern := range strings.Split(in, "\n\n") {
 		p := NewPattern(strings.Split(pattern, "\n"))
-
-		for i := 0; i < p.Width()-1; i += 1 {
-			if ReflectedAt(p.columns, i, 0) {
-				sum += i + 1
-			}
-		}
-
-		for i := 0; i < p.Height()-1; i += 1 {
-			if ReflectedAt(p.rows, i, 0) {
-				sum += 100 * (i + 1)
-			}
-		}
+		sum += GetReflectionScores(&p)[0]
 	}
 
 	return sum
@@ -39,7 +28,53 @@ func solve1(in string) int {
 func solve2(in string) int {
 	sum := 0
 
+	for _, pattern := range strings.Split(in, "\n\n") {
+		p := NewPattern(strings.Split(pattern, "\n"))
+		sum += GetSmudgedScore(&p)
+	}
+
 	return sum
+}
+
+func GetSmudgedScore(p *Pattern) int {
+	oldScores := GetReflectionScores(p)
+
+	if len(oldScores) > 1 {
+		panic("should not happen")
+	}
+
+	for y := 0; y < p.Height(); y += 1 {
+		for x := 0; x < p.Width(); x += 1 {
+			np := p.WithSmudgeAt(x, y)
+			newScores := GetReflectionScores(&np)
+
+			for _, score := range newScores {
+				if score != oldScores[0] {
+					return score
+				}
+			}
+		}
+	}
+
+	panic("unreachable")
+}
+
+func GetReflectionScores(p *Pattern) []int {
+	scores := make([]int, 0)
+
+	for i := 0; i < p.Width()-1; i += 1 {
+		if ReflectedAt(p.columns, i, 0) {
+			scores = append(scores, i+1)
+		}
+	}
+
+	for i := 0; i < p.Height()-1; i += 1 {
+		if ReflectedAt(p.rows, i, 0) {
+			scores = append(scores, 100*(i+1))
+		}
+	}
+
+	return scores
 }
 
 func ReflectedAt(lines []string, n, offset int) bool {
@@ -80,12 +115,27 @@ func NewPattern(grid []string) Pattern {
 	return p
 }
 
-func (p *Pattern) Row(n int) string {
-	return p.grid[n]
-}
+func (p *Pattern) WithSmudgeAt(x, y int) Pattern {
+	np := Pattern{}
+	np.grid = p.grid
+	np.rows = make([]string, p.Height())
+	copy(np.rows, p.rows)
+	np.columns = make([]string, p.Width())
+	copy(np.columns, p.columns)
 
-func (p *Pattern) Column(n int) string {
-	return p.columns[n]
+	var smudge rune
+
+	if np.grid[y][x] == '.' {
+		smudge = '#'
+	} else {
+		smudge = '.'
+	}
+
+	np.rows[y] = np.rows[y][:x] + string(smudge) + np.rows[y][x+1:]
+	np.grid[y] = np.rows[y]
+	np.columns[x] = np.columns[x][:y] + string(smudge) + np.columns[x][y+1:]
+
+	return np
 }
 
 func (p *Pattern) Width() int {
