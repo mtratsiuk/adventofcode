@@ -1,11 +1,19 @@
 (def solve1
   (||
     (def input (readInput "09_mirage_maintenance"))
-    (def numbers ((input/split "\n")
-                  /map (|line| ((line/split " ")/map Number))))
 
-    ((numbers/map (|nums| (extrapolate nums 0)))
-      /reduce (|x acc| (+ x acc)))))
+    (def numbers (~> input
+                  ~> split "\n"
+                  ~> map (|line| (~> line
+                                  ~> split " "
+                                  ~> map Number))))
+
+    (def extrapolated
+      (~> numbers
+       ~> map (|nums| (extrapolate nums 0))))
+
+    (~> extrapolated
+     ~> reduce (|x acc| (+ x acc)))))
 
 
 (def extrapolate
@@ -15,7 +23,9 @@
         acc)
       (else
         (extrapolate
-              ((nums/slice 1)/map (|n i| (- n (nums/at i))))
+              (~> nums
+               ~> slice 1
+               ~> map (|n i| (- n (nums/at i))))
               (+ acc (nums/at -1)))))))
 
 
