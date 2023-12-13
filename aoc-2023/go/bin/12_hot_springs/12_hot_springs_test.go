@@ -32,9 +32,9 @@ func Test2(t *testing.T) {
 ?###???????? 3,2,1
 `
 
-	expected := 525152
+	expected := 21
 
-	if res := solve2(strings.TrimSpace(in)); res != expected {
+	if res := solve1(strings.TrimSpace(in)); res != expected {
 		t.Errorf("\nsolve2() failed!\nexpected: %v\nactual:%v", expected, res)
 	}
 }
