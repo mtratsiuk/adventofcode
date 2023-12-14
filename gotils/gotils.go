@@ -3,6 +3,7 @@ package gotils
 import (
 	"fmt"
 	"math"
+	"slices"
 	"strconv"
 
 	"golang.org/x/exp/constraints"
@@ -171,4 +172,10 @@ func Pairs[T any](values []T) [][]T {
 	}
 
 	return pairs
+}
+
+func ReverseAscii(in string) string {
+	r := []rune(in)
+	slices.Reverse(r)
+	return string(r)
 }

@@ -1,4 +1,4 @@
 .env
+aoc-*/data/*.txt
 
 target
-data/*.txt
