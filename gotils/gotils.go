@@ -179,3 +179,17 @@ func ReverseAscii(in string) string {
 	slices.Reverse(r)
 	return string(r)
 }
+
+func Make2d[T any](width, height int, init T) [][]T {
+	grid := make([][]T, height)
+
+	for y := 0; y < height; y += 1 {
+		grid[y] = make([]T, width)
+
+		for x := 0; x < width; x += 1 {
+			grid[y][x] = init
+		}
+	}
+
+	return grid
+}
