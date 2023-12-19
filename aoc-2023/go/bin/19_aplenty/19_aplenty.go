@@ -34,12 +34,6 @@ func solve1(in string) int {
 	return sum
 }
 
-func solve2(in string) int {
-	sum := 0
-
-	return sum
-}
-
 func WalkWorkflows(ws Workflows, part Part, c chan int) {
 	rules := ws["in"]
 
@@ -65,6 +59,57 @@ func WalkWorkflows(ws Workflows, part Part, c chan int) {
 	}
 }
 
+func solve2(in string) int {
+	wsStr, _, _ := strings.Cut(in, "\n\n")
+	ws := ParseWorkflows(strings.Split(wsStr, "\n"))
+	graph := make(map[string][]Vert, 0)
+
+	for from, rules := range ws {
+		verts := make([]Vert, 0)
+		apply := id
+
+		for _, r := range rules {
+			v, a := r.IntoVert(from, apply)
+			apply = a
+			verts = append(verts, v)
+		}
+
+		graph[from] = verts
+	}
+
+	sum := 0
+
+	var run func(PartRanges, string)
+	run = func(pr PartRanges, node string) {
+		if node == "R" {
+			return
+		}
+
+		if node == "A" {
+			m := 1
+			for _, r := range pr {
+				m *= (r.right - r.left + 1)
+			}
+			sum += m
+		}
+
+		for _, v := range graph[node] {
+			run(v.apply(pr), v.to)
+		}
+	}
+
+	init := PartRanges{
+		"x": Range{1, 4000},
+		"m": Range{1, 4000},
+		"a": Range{1, 4000},
+		"s": Range{1, 4000},
+	}
+
+	run(init, "in")
+
+	return sum
+}
+
 func less(key string, threshold int) func(Part) bool {
 	return func(p Part) bool {
 		return p[key] < threshold
@@ -81,9 +126,94 @@ func always(p Part) bool {
 	return true
 }
 
+type PartRangeApplier func(PartRanges) PartRanges
+
+func id(v PartRanges) PartRanges {
+	return v.Copy()
+}
+
+func compose(f, g PartRangeApplier) PartRangeApplier {
+	return func(pr PartRanges) PartRanges {
+		return f(g(pr))
+	}
+}
+
+type Vert struct {
+	from  string
+	to    string
+	apply PartRangeApplier
+}
+
 type Rule struct {
 	test func(Part) bool
 	dest string
+	key  string
+	op   string
+	val  int
+}
+
+func (r Rule) IsCond() bool {
+	return r.op != ""
+}
+
+func (r Rule) IntoVert(from string, apply PartRangeApplier) (Vert, PartRangeApplier) {
+	if !r.IsCond() {
+		return Vert{from, r.dest, compose(id, apply)}, nil
+	}
+
+	if r.op == "<" {
+		apply1 := func(pr PartRanges) PartRanges {
+			cp := pr.Copy()
+			cp[r.key] = cp[r.key].ApplyRight(r.val - 1)
+			return cp
+		}
+
+		apply2 := func(pr PartRanges) PartRanges {
+			cp := pr.Copy()
+			cp[r.key] = cp[r.key].ApplyLeft(r.val)
+			return cp
+		}
+
+		return Vert{from, r.dest, compose(apply1, apply)}, compose(apply2, apply)
+	}
+
+	apply1 := func(pr PartRanges) PartRanges {
+		cp := pr.Copy()
+		cp[r.key] = cp[r.key].ApplyLeft(r.val + 1)
+		return cp
+	}
+
+	apply2 := func(pr PartRanges) PartRanges {
+		cp := pr.Copy()
+		cp[r.key] = cp[r.key].ApplyRight(r.val)
+		return cp
+	}
+
+	return Vert{from, r.dest, compose(apply1, apply)}, compose(apply2, apply)
+}
+
+type Range struct {
+	left, right int
+}
+
+func (r Range) ApplyLeft(left int) Range {
+	return Range{max(r.left, left), r.right}
+}
+
+func (r Range) ApplyRight(right int) Range {
+	return Range{r.left, min(r.right, right)}
+}
+
+type PartRanges map[string]Range
+
+func (pr PartRanges) Copy() PartRanges {
+	cp := make(PartRanges, len(pr))
+
+	for k, v := range pr {
+		cp[k] = v
+	}
+
+	return cp
 }
 
 type Part map[string]int
@@ -116,12 +246,15 @@ func ParseWorkflows(lines []string) Workflows {
 				rule.dest = test
 			} else {
 				key := string(test[0])
-				op := test[1]
+				op := string(test[1])
 				threshold := gotils.MustParseInt(test[2:])
 
 				rule.dest = dest
+				rule.key = key
+				rule.op = op
+				rule.val = threshold
 
-				if op == '<' {
+				if op == "<" {
 					rule.test = less(key, threshold)
 				} else {
 					rule.test = more(key, threshold)
