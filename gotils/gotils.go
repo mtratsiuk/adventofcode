@@ -193,3 +193,7 @@ func Make2d[T any](width, height int, init T) [][]T {
 
 	return grid
 }
+
+func Last[T any](s []T) T {
+	return s[len(s)-1]
+}
