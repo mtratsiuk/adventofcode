@@ -26,7 +26,7 @@ func Test2(t *testing.T) {
 data
 `
 
-	expected := 0
+	expected := 227411378431763
 
 	if res := solve2(strings.TrimSpace(in)); res != expected {
 		t.Errorf("\nsolve2() failed!\nexpected: %v\nactual:%v", expected, res)

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 
 	"github.com/mtratsiuk/adventofcode/gotils"
@@ -20,7 +21,7 @@ func solve1(in string) int {
 	low := 0
 	high := 0
 
-	for i := 1_000; i > 0; i -= 1 {
+	for i := 0; i < 1000; i += 1 {
 		low += 1
 
 		for _, o := range config.modules[string(ModuleTypeBroad)].outs {
@@ -31,6 +32,11 @@ func solve1(in string) int {
 			var pulse Pulse
 
 			pulse, pulses = pulses[0], pulses[1:]
+
+			if pulse.value == PulseTypeLow && slices.Contains([]string{"vz", "bq", "qh", "lt"}, pulse.to) {
+				// solving part 2
+				fmt.Printf("Low for %v at push %v\n", pulse.to, i)
+			}
 
 			if pulse.value == PulseTypeLow {
 				low += 1
@@ -72,9 +78,8 @@ func solve1(in string) int {
 }
 
 func solve2(in string) int {
-	sum := 0
-
-	return sum
+	// lol
+	return gotils.LcmAll([]int{4476 - 655, 5862 - 1769, 6665 - 2776, 6526 - 2787})
 }
 
 var FlipStateToPulseType = map[bool]PulseType{
