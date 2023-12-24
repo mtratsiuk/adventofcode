@@ -63,17 +63,10 @@ func solve2(in string) int {
 
 	var build func(pos, lastPos, lastNodePos Pos2d, steps int)
 	build = func(pos, lastPos, lastNodePos Pos2d, steps int) {
-		// toString := func(p Pos2d) string {
-		// 	return string(grid[pos.y][pos.x])
-		// }
-
 		if pos.IsOutOfBounds(width, height) ||
 			grid[pos.y][pos.x] == '#' {
 			return
 		}
-
-		// fmt.Printf("build: pos: %v (%v) | lastPos: %v (%v) | lastNodePos: %v (%v) | steps: %v\n",
-		// 	pos, toString(pos), lastPos, toString(lastPos), lastNodePos, toString(lastNodePos), steps)
 
 		if pos == end {
 			nodes[pos] = NewNode(pos)
@@ -115,7 +108,7 @@ func solve2(in string) int {
 					neighbor.Move(ArrowToMove2d[grid[neighbor.y][neighbor.x]]),
 					neighbor,
 					intersection,
-					2) // todo reset steps
+					2)
 			}
 
 			return
@@ -134,40 +127,27 @@ func solve2(in string) int {
 	}
 
 	build(start, start, start, 0)
-	fmt.Println(len(nodes))
-	// maxVisited := 0
 
-	var run func(node *Node, steps int, visited gotils.Set[Pos2d])
-	run = func(node *Node, steps int, visited gotils.Set[Pos2d]) {
-		// fmt.Printf("Current steps %v, visited: %v\n", steps, len(visited.Items()))
-
+	var run func(node *Node, steps int, visited []bool)
+	run = func(node *Node, steps int, visited []bool) {
 		if node.pos == end {
-			if maxSteps != max(maxSteps, steps) {
-				fmt.Printf("Found max %v\n", maxSteps)
-			}
-
 			maxSteps = max(maxSteps, steps)
 			return
 		}
 
-		nextVisited := visited.Copy().Add(node.pos)
-		// for _, v := range node.edges.Items() {
-		// 	nextVisited.Add(v.end)
-		// }
-
-		// maxVisited = max(maxVisited, len(nextVisited.Items()))
-		// fmt.Printf("maxVisited len: %v\n", maxVisited)
-
 		for _, v := range node.edges.Items() {
-			if visited.Has(v.end) {
+			key := node.pos.x*1_000 + node.pos.y
+			if visited[key] {
 				continue
 			}
-			// fmt.Printf("edge len: %v\n", v.len)
-			run(nodes[v.end], steps+v.len, nextVisited)
+
+			visited[key] = true
+			run(nodes[v.end], steps+v.len, visited)
+			visited[key] = false
 		}
 	}
 
-	run(nodes[start], 0, gotils.NewSet([]Pos2d{}))
+	run(nodes[start], 0, make([]bool, 1_000_000))
 
 	return maxSteps
 }
@@ -175,7 +155,7 @@ func solve2(in string) int {
 func NewNode(pos Pos2d) *Node {
 	n := Node{}
 	n.pos = pos
-	n.edges = gotils.NewSet([]Edge{})
+	n.edges = gotils.NewSet[Edge]()
 	return &n
 }
 

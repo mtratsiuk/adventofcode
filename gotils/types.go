@@ -1,8 +1,7 @@
 package gotils
 
 import (
-	"fmt"
-	"strings"
+	"slices"
 
 	"golang.org/x/exp/constraints"
 )
@@ -12,49 +11,24 @@ type Numeric interface {
 }
 
 type Set[T comparable] struct {
-	data map[T]struct{}
+	data []T
 }
 
-func NewSet[T comparable](items []T) Set[T] {
-	s := Set[T]{make(map[T]struct{})}
-
-	for _, v := range items {
-		s.Add(v)
-	}
-
+func NewSet[T comparable]() Set[T] {
+	s := Set[T]{make([]T, 0)}
 	return s
 }
 
-func (s Set[T]) Add(v T) Set[T] {
-	s.data[v] = struct{}{}
-	return s
-}
-
-func (s Set[T]) Has(v T) bool {
-	_, ok := s.data[v]
-	return ok
-}
-
-func (s Set[T]) Items() []T {
-	its := make([]T, 0)
-
-	for v := range s.data {
-		its = append(its, v)
+func (s *Set[T]) Add(v T) {
+	if !slices.Contains(s.data, v) {
+		s.data = append(s.data, v)
 	}
-
-	return its
 }
 
-func (s Set[T]) Copy() Set[T] {
-	return NewSet(s.Items())
+func (s *Set[T]) Has(v T) bool {
+	return slices.Contains(s.data, v)
 }
 
-func (s Set[T]) HashCode() string {
-	var sb strings.Builder
-
-	for v := range s.data {
-		sb.WriteString(fmt.Sprintf("%v", v))
-	}
-
-	return sb.String()
+func (s *Set[T]) Items() []T {
+	return s.data
 }
