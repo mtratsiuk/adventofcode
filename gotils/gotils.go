@@ -194,6 +194,16 @@ func Make2d[T any](width, height int, init T) [][]T {
 	return grid
 }
 
+func Make1d[T any](size int, init T) []T {
+	vec := make([]T, size)
+
+	for y := 0; y < size; y += 1 {
+		vec[y] = init
+	}
+
+	return vec
+}
+
 func Last[T any](s []T) T {
 	return s[len(s)-1]
 }

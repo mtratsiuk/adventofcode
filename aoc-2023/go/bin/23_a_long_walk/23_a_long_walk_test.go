@@ -66,7 +66,7 @@ func Test2(t *testing.T) {
 #####################.#
 `
 
-	expected := 0
+	expected := 154
 
 	if res := solve2(strings.TrimSpace(in)); res != expected {
 		t.Errorf("\nsolve2() failed!\nexpected: %v\nactual:%v", expected, res)
