@@ -17,9 +17,39 @@ func main() {
 
 func solve1(in string) int {
 	bricks := ParseFallingBricks(in)
+
+	tower, _ := gravity(bricks)
+
+	return gotils.Count(tower, func(b Brick) bool { return b.disintegratable })
+}
+
+func solve2(in string) int {
+	bricks := ParseFallingBricks(in)
+
+	tower, _ := gravity(bricks)
+	sum := 0
+
+	for i, b := range tower {
+		if b.disintegratable {
+			continue
+		}
+
+		bs := slices.Clone(tower)
+		bs = append(bs[:i], bs[i+1:]...)
+
+		_, fell := gravity(bs)
+
+		sum += fell
+	}
+
+	return sum
+}
+
+func gravity(bricks []Brick) ([]Brick, int) {
 	slices.SortFunc(bricks, func(a, b Brick) int { return a.start.z - b.start.z })
 
 	tower := make([]Brick, 0)
+	fell := 0
 
 	for _, brick := range bricks {
 		landingZ := 0
@@ -47,22 +77,20 @@ func solve1(in string) int {
 			}
 		}
 
+		oZ := brick.start.z
 		size := brick.SizeZ()
 		brick.start.z = landingZ + 1
 		brick.end.z = brick.start.z + size
 
-		tower = append(tower, brick)
+		if oZ != brick.start.z {
+			fell += 1
+		}
 
+		tower = append(tower, brick)
 		slices.SortFunc(tower, func(a, b Brick) int { return b.end.z - a.end.z })
 	}
 
-	return gotils.Count(tower, func(b Brick) bool { return b.disintegratable })
-}
-
-func solve2(in string) int {
-	sum := 0
-
-	return sum
+	return tower, fell
 }
 
 type Pos3d struct {
