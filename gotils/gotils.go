@@ -220,3 +220,9 @@ func ConcatIters[T any](seqs ...iter.Seq[T]) iter.Seq[T] {
 		}
 	}
 }
+
+func MapContains[K comparable, V any](m map[K]V, k K) bool {
+	_, ok := m[k]
+
+	return ok
+}
