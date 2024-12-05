@@ -2,6 +2,7 @@ package gotils
 
 import (
 	"fmt"
+	"iter"
 	"math"
 	"slices"
 	"strconv"
@@ -206,4 +207,16 @@ func Make1d[T any](size int, init T) []T {
 
 func Last[T any](s []T) T {
 	return s[len(s)-1]
+}
+
+func ConcatIters[T any](seqs ...iter.Seq[T]) iter.Seq[T] {
+	return func(yield func(T) bool) {
+		for _, seq := range seqs {
+			for v := range seq {
+				if !yield(v) {
+					return
+				}
+			}
+		}
+	}
 }
