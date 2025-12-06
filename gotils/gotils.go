@@ -226,3 +226,11 @@ func MapContains[K comparable, V any](m map[K]V, k K) bool {
 
 	return ok
 }
+
+func DigitsCount[T constraints.Integer](val T) int {
+	if val == 0 {
+		return 1
+	}
+
+	return int(math.Floor(math.Log10(math.Abs(float64(val))))) + 1
+}
