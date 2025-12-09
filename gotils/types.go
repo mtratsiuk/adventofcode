@@ -1,7 +1,8 @@
 package gotils
 
 import (
-	"slices"
+	"iter"
+	"maps"
 
 	"golang.org/x/exp/constraints"
 )
@@ -11,24 +12,23 @@ type Numeric interface {
 }
 
 type Set[T comparable] struct {
-	data []T
+	data map[T]struct{}
 }
 
 func NewSet[T comparable]() Set[T] {
-	s := Set[T]{make([]T, 0)}
+	s := Set[T]{make(map[T]struct{}, 0)}
 	return s
 }
 
 func (s *Set[T]) Add(v T) {
-	if !slices.Contains(s.data, v) {
-		s.data = append(s.data, v)
-	}
+	s.data[v] = struct{}{}
 }
 
 func (s *Set[T]) Has(v T) bool {
-	return slices.Contains(s.data, v)
+	_, ok := s.data[v]
+	return ok
 }
 
-func (s *Set[T]) Items() []T {
-	return s.data
+func (s *Set[T]) Items() iter.Seq[T] {
+	return maps.Keys(s.data)
 }

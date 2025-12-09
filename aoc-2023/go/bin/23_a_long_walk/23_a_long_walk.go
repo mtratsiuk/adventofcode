@@ -135,7 +135,7 @@ func solve2(in string) int {
 			return
 		}
 
-		for _, v := range node.edges.Items() {
+		for v := range node.edges.Items() {
 			key := node.pos.x*1_000 + node.pos.y
 			if visited[key] {
 				continue

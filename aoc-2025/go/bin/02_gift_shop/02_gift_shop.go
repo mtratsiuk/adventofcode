@@ -69,6 +69,56 @@ func solve2(in string) int {
 	return sum
 }
 
+func solve2sync(in string) int {
+	sum := 0
+	ids := gotils.NewSet[int]()
+
+	for l, r := range ranges(in) {
+		for i := gotils.DigitsCount(r); i >= 2; i -= 1 {
+			findInvalidIdsSync(ids, l, r, i)
+		}
+	}
+
+	for id := range ids.Items() {
+		sum += id
+	}
+
+	return sum
+}
+
+func findInvalidIdsSync(ids gotils.Set[int], l, r, n int) {
+	for l <= r {
+		digits := gotils.DigitsCount(l)
+
+		if digits%n != 0 {
+			l = int(math.Pow10(digits))
+			continue
+		}
+
+		div := int(math.Pow10(digits / n))
+		cur := l / div
+		group := l % div
+		passed := true
+
+		for cur > 0 {
+			nextGroup := cur % div
+
+			if nextGroup != group {
+				passed = false
+				break
+			}
+
+			cur /= div
+		}
+
+		if passed {
+			ids.Add(l)
+		}
+
+		l += 1
+	}
+}
+
 func findInvalidIds(ids chan<- int, l, r, n int) {
 	defer func() {
 		ids <- -1
