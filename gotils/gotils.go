@@ -78,6 +78,16 @@ func Every[T any](s []T, f func(T) bool) bool {
 	return true
 }
 
+func Any[T any](s []T, f func(T) bool) bool {
+	for _, v := range s {
+		if f(v) {
+			return true
+		}
+	}
+
+	return false
+}
+
 func Count[T any](s []T, f func(T) bool) int {
 	count := 0
 

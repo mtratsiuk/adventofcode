@@ -24,6 +24,10 @@ func (s *Set[T]) Add(v T) {
 	s.data[v] = struct{}{}
 }
 
+func (s *Set[T]) Remove(v T) {
+	delete(s.data, v)
+}
+
 func (s *Set[T]) Has(v T) bool {
 	_, ok := s.data[v]
 	return ok
