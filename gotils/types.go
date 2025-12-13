@@ -37,6 +37,55 @@ func (s *Set[T]) Items() iter.Seq[T] {
 	return maps.Keys(s.data)
 }
 
+type Queue[T any] struct {
+	data []T
+}
+
+func NewQueue[T any]() Queue[T] {
+	q := Queue[T]{}
+	q.data = make([]T, 0)
+	return q
+}
+
+func (q *Queue[T]) Push(v T) {
+	q.data = append(q.data, v)
+}
+
+func (q *Queue[T]) PopLeft() T {
+	if len(q.data) == 0 {
+		panic("PopLeft: queue is empty")
+	}
+
+	v := q.data[0]
+
+	if len(q.data) > 1 {
+		q.data = q.data[1:]
+	} else {
+		q.data = q.data[:0]
+	}
+
+	return v
+}
+
+func (q *Queue[T]) Pop() T {
+	if len(q.data) == 0 {
+		panic("Pop: queue is empty")
+	}
+
+	v := q.data[len(q.data)-1]
+	q.data = q.data[0 : len(q.data)-1]
+
+	return v
+}
+
+func (q *Queue[T]) Empty() bool {
+	return len(q.data) == 0
+}
+
+func (q *Queue[T]) Items() []T {
+	return q.data
+}
+
 type Pos2d struct {
 	X int
 	Y int
