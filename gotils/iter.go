@@ -1,6 +1,8 @@
 package gotils
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type Iterable[T any] interface {
 	Next() (T, bool)

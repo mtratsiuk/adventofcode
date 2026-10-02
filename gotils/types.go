@@ -37,6 +37,10 @@ func (s *Set[T]) Items() iter.Seq[T] {
 	return maps.Keys(s.data)
 }
 
+func (s *Set[T]) Size() int {
+	return len(s.data)
+}
+
 type Queue[T any] struct {
 	data []T
 }
