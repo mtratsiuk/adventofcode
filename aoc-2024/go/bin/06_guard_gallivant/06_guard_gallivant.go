@@ -7,6 +7,8 @@ import (
 	"github.com/mtratsiuk/adventofcode/gotils"
 )
 
+const OBSTACLE_RUNE = '#'
+
 func main() {
 	in := gotils.ReadInput("06_guard_gallivant")
 
@@ -15,7 +17,46 @@ func main() {
 }
 
 func solve1(in string) int {
-	visited := make(map[gotils.Pos2d]struct{}, 0)
+	grid := NewGrid(in)
+	visited, _ := grid.Walk()
+
+	return len(visited)
+}
+
+func solve2(in string) int {
+	sum := 0
+	grid := NewGrid(in)
+	startPos, startDir := grid.pos, grid.dir
+
+	visited, _ := grid.Walk()
+
+	for pathPos := range visited {
+		if pathPos == startPos {
+			continue
+		}
+
+		grid.pos = startPos
+		grid.dir = startDir
+
+		grid.grid[pathPos.Y][pathPos.X] = OBSTACLE_RUNE
+
+		if _, ok := grid.Walk(); !ok {
+			sum += 1
+		}
+
+		grid.grid[pathPos.Y][pathPos.X] = '.'
+	}
+
+	return sum
+}
+
+type Grid struct {
+	grid          [][]rune
+	width, height int
+	pos, dir      gotils.Pos2d
+}
+
+func NewGrid(in string) Grid {
 	grid := strings.Split(in, "\n")
 	flatGrid := strings.Join(grid, "")
 	height := len(grid)
@@ -27,29 +68,41 @@ func solve1(in string) int {
 	pos := gotils.NewPos2d(posIdx%width, posIdx/width)
 	dir := *CharToDirection(rune(flatGrid[posIdx]))
 
-	for !pos.IsOutOfBounds(width, height) {
-		visited[pos] = struct{}{}
-		next := pos.Move(dir)
+	g := Grid{
+		grid:   gotils.IterFluent(grid).Map(func(s string) []rune { return []rune(s) }).Collect(),
+		width:  width,
+		height: height,
+		pos:    pos,
+		dir:    dir,
+	}
 
-		if next.IsOutOfBounds(width, height) {
+	return g
+}
+
+func (g *Grid) Walk() (map[gotils.Pos2d]gotils.Pos2d, bool) {
+	visited := make(map[gotils.Pos2d]gotils.Pos2d, 0)
+
+	for !g.pos.IsOutOfBounds(g.width, g.height) {
+		visited[g.pos] = g.dir
+		next := g.pos.Move(g.dir)
+
+		if next.IsOutOfBounds(g.width, g.height) {
 			break
 		}
 
-		for grid[next.Y][next.X] == '#' {
-			dir = dir.NextDirection90Clockwise()
-			next = pos.Move(dir)
+		for g.grid[next.Y][next.X] == OBSTACLE_RUNE {
+			g.dir = g.dir.NextDirection90Clockwise()
+			next = g.pos.Move(g.dir)
 		}
 
-		pos = next
+		if dir, ok := visited[next]; ok && dir == g.dir {
+			return visited, false
+		}
+
+		g.pos = next
 	}
 
-	return len(visited)
-}
-
-func solve2(in string) int {
-	sum := 0
-
-	return sum
+	return visited, true
 }
 
 func CharToDirection(c rune) *gotils.Pos2d {

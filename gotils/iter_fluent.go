@@ -13,6 +13,10 @@ func IterFluent[T any](v []T) iterFluent[T] {
 	return iterFluent[T]{slices.Values(v)}
 }
 
+func IterFluentSeq[T any](v iter.Seq[T]) iterFluent[T] {
+	return iterFluent[T]{v}
+}
+
 func (it iterFluent[T]) Map[R any](f func(T) R) iterFluent[R] {
 	return iterFluent[R]{
 		func(yield func(R) bool) {
@@ -31,4 +35,8 @@ func (it iterFluent[T]) Fold[R any](r R, f func(R, T) R) R {
 	}
 
 	return r
+}
+
+func (it iterFluent[T]) Collect() []T {
+	return slices.Collect(it.seq)
 }
