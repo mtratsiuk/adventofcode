@@ -244,3 +244,9 @@ func DigitsCount[T constraints.Integer](val T) int {
 
 	return int(math.Floor(math.Log10(math.Abs(float64(val))))) + 1
 }
+
+func Assert(cond bool, createMessage func() string) {
+	if !cond {
+		panic(createMessage())
+	}
+}

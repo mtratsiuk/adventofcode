@@ -3,6 +3,7 @@ package gotils
 import (
 	"iter"
 	"maps"
+	"slices"
 
 	"golang.org/x/exp/constraints"
 )
@@ -103,6 +104,10 @@ func (p Pos2d) Move(d Pos2d) Pos2d {
 	return Pos2d{p.X + d.X, p.Y + d.Y}
 }
 
+func (p Pos2d) NextDirection90Clockwise() Pos2d {
+	return Directions90[(slices.Index(Directions90, p)+1)%len(Directions90)]
+}
+
 func (p Pos2d) IsOutOfBounds(width, height int) bool {
 	return p.X < 0 || p.X >= width || p.Y < 0 || p.Y >= height
 }
@@ -120,8 +125,8 @@ var (
 
 var Directions90 = []Pos2d{
 	DirW,
-	DirE,
 	DirN,
+	DirE,
 	DirS,
 }
 
