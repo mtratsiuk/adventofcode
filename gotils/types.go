@@ -140,3 +140,36 @@ var DirectionsAll = []Pos2d{
 	DirW,
 	DirNW,
 }
+
+type Vec2 struct {
+	From, To Pos2d
+}
+
+func NewVec2(from, to Pos2d) Vec2 {
+	return Vec2{from, to}
+}
+
+func (v Vec2) Reverse() Vec2 {
+	return Vec2{v.To, v.From}
+}
+
+func (v Vec2) Sides() (int, int) {
+	return v.To.X - v.From.X, v.To.Y - v.From.Y
+}
+
+func (v Vec2) NormaliseInt() Vec2 {
+	dx, dy := v.Sides()
+	gcd := Gcd(Abs(dx), Abs(dy))
+
+	return Vec2{v.From, NewPos2d(v.From.X+dx/gcd, v.From.Y+dy/gcd)}
+}
+
+func (v Vec2) Scale(value int) Vec2 {
+	dx, dy := v.Sides()
+
+	return Vec2{v.From, NewPos2d(v.From.X+dx*value, v.From.Y+dy*value)}
+}
+
+func (v Vec2) Add(dx, dy int) Vec2 {
+	return NewVec2(v.From, NewPos2d(v.To.X+dx, v.To.Y+dy))
+}
