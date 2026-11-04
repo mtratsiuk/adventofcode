@@ -19,10 +19,10 @@ func Test1(t *testing.T) {
 
 func Test2(t *testing.T) {
 	in := `
-data
+2333133121414131402
 `
 
-	expected := 0
+	expected := 2858
 
 	if res := solve2(strings.TrimSpace(in)); res != expected {
 		t.Errorf("\nsolve2() failed!\nexpected: %v\nactual:%v", expected, res)
